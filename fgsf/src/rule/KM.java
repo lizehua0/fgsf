@@ -51,16 +51,18 @@ public class KM {
                 double diff = Double.MAX_VALUE;
                 for(int j = 0;j < nodesVisited.length;j++)
                 {
-                    diff = diff <= less[j] ? diff : less[j];
+                    diff = (diff >= less[j]&&less[j]>0) ? less[j]:diff;
                 }
+               // System.out.println(diff + " " + i);
                 for(int j = 0;j < nodesVisited.length;j++)
                 {
                     if(gridsVisited[j]) {grids[j] -= diff;}
                     if(nodesVisited[j]) {nodes[j] += diff;}
-                    else {less[j] -= diff;}
+                    //if (!gridsVisited[j] && !nodesVisited[j]){less[j] -= diff;}
                 }
             }
         }
+    System.out.println("debug");
     }
 
     /**
@@ -76,8 +78,14 @@ public class KM {
                 continue;
             }
             double gap = grids[i] + nodes[j] - graph[i][j];
+            gap = (double) Math.round(gap*100)/100;
+//            if(gap == -5.6843418860808015E-14){
+//                System.out.println(grids[i] + "   "+ nodes[j] + "   "+ graph[i][j]);
+//            }
+            //System.out.println("****"+gap + "   grid:  " + grids[i]+"   node:  "+ nodes[j] +"   graph:  "+graph[i][j]+"*****");
             if(gap == 0) {
                 nodesVisited[j] = true;
+                //System.out.println("第" + i + "个空洞在找第" + j + "个节点，但是该节点已经被" +  movedNode[j] + "个空洞占领");
                 if (movedNode[j] == -1 || line(movedNode[j])) {
                     movedNode[j] = i;
                     return true;
@@ -169,5 +177,18 @@ public class KM {
 
     public void setSum(double sum) {
         this.sum = sum;
+    }
+
+    public static void main(String arg[]){
+//        KM km = new KM(5);
+//        double data[][]={{226.2450440254008,172.47225879007095,180.13836628998504,63.268752579549826,98.01129047185395},{248.1473296559494,178.48389491872473,137.70847977489737,276.26251641612265,359.825955142821},{219.72481490048546,176.34681442750852,199.71551567772482,58.50008421226616,73.37349715548794},{223.42621053129702,156.39059962778865,132.85360964124402,258.82484961154404,341.324149481562},{215.9193567516577,183.57482906245897,220.39224894540706,63.96549579822057,49.10322911677667}};
+//        km.kmInit(data);
+//        km.km();
+//        km.lineSum();
+//        System.out.println(km.sum);
+        double d = 289.93261667748436;
+        d = (double) Math.round(d*100)/100;
+        System.out.println(d);
+
     }
 }

@@ -122,6 +122,14 @@ public enum MoveRule {
                             }
                         }
                     }
+//                    for(int i = 0;i < len;i++)
+//                    {
+//                        for(int j = 0;j < len;j++)
+//                        {
+//                           System.out.print(graph[i][j] + "   ");
+//                        }
+//                        System.out.println("");
+//                    }
                     KM km = new KM(len);
                     km.kmInit(graph);
                     km.km();

@@ -39,6 +39,8 @@ public class NodeUtils {
      * @return 返回两个节点间的距离
      */
     public static double distanceOfNode(Node node1,Node node2){
-        return Math.sqrt(Math.pow((node1.getX()-node2.getX()),2) + Math.pow((node1.getY()-node2.getY()),2));
+        double result = Math.sqrt(Math.pow((node1.getX()-node2.getX()),2) + Math.pow((node1.getY()-node2.getY()),2));
+        result = (double) Math.round(result*100)/100;
+        return result;
     };
 }
