@@ -10,15 +10,19 @@ import java.util.UUID;
 
 public class World {
     //动态节点所占比例
-    private float pi;
+   // private float pi;
 
     private double length;
 
     private double width;
     //大格子的边长
     private double sideLength;
-    //节点个数
+    //总节点个数
     private int numOfNode;
+    //静态节点个数
+    private int numOfStaticNode;
+    //动态节点的个数
+    private int numOfDynamicNode;
     //最小移动路径和
     private double lineSum;
 
@@ -28,12 +32,13 @@ public class World {
 
     private Map<Integer,Node> dynamicNodes = new HashMap<>();
 
-    public World(double length, double width,double sideLength,float pi,int numOfNode){
-        this.pi = pi;
+    public World(double length, double width,double sideLength,int numOfStaticNode,int numOfDynamicNode){
+        this.numOfStaticNode = numOfStaticNode;
+        this.numOfDynamicNode = numOfDynamicNode;
         this.length = length;
         this.width = width;
         this.sideLength = sideLength;
-        this.numOfNode = numOfNode;
+        this.numOfNode = numOfStaticNode + numOfDynamicNode;
     }
     /*
     初始化整个区域
@@ -56,15 +61,17 @@ public class World {
     播撒节点
      */
     public void spreadNodes(){
-        for(int i = 0;i < numOfNode;i++){
+        for(int i = 0;i < numOfStaticNode;i++){
             Node node = NodeUtils.randomNode(new Node(),length,width);
-            if(new Random().nextDouble() > pi){
-                node.setFlag(1);
-            } else{
-                node.setFlag(0);
-            }
+            node.setFlag(1);
             nodes.put(new Integer(i), node);
         }
+        for(int i = numOfStaticNode;i < numOfNode;i++){
+            Node node = NodeUtils.randomNode(new Node(),length,width);
+            node.setFlag(0);
+            nodes.put(new Integer(i), node);
+        }
+
     }
 
     /*
@@ -79,19 +86,54 @@ public class World {
         }
     }
 
-    /*
-       找出大空格子（km算法需要）
+    /**
+     * 找出大空格子（km算法需要）这里的空洞不包括静态节点
+     * @return
      */
     public Map<Integer,Grid> getBigGrids(){
         Map<Integer,Grid> bigAirDrids = new HashMap<>();
+        int flag = 0;
         for(Map.Entry<Integer,Grid> gridEntry:grids.entrySet())
         {
             for(Map.Entry<Integer,Node> nodeEntry:nodes.entrySet())
-            if(gridEntry.getValue().isIncludeNode(nodeEntry.getValue())){
-                bigAirDrids.put(gridEntry.getKey(),gridEntry.getValue());
+            {
+                if (gridEntry.getValue().isIncludeNode(nodeEntry.getValue()) && nodeEntry.getValue().getFlag() == 1) {
+                    flag = 1;
+                    break;
+                }
             }
+            if(flag == 0){
+                bigAirDrids.put(gridEntry.getKey(), gridEntry.getValue());
+            }
+            flag = 0;
         }
+        System.out.println("空洞数量：" + bigAirDrids.size() + "!");
         return bigAirDrids;
+    }
+
+    /**
+     * 找出空格子包括静态节点
+     * 这个方法就是测试最后还剩几个空洞用的
+     * @return
+     */
+    public Map<Integer,Grid> getBigGrids1(){
+        Map<Integer,Grid> bigAirDrids1 = new HashMap<>();
+        int flag = 0;
+        for(Map.Entry<Integer,Grid> gridEntry:grids.entrySet())
+        {
+            for(Map.Entry<Integer,Node> nodeEntry:nodes.entrySet())
+            {
+                if (gridEntry.getValue().isIncludeNode(nodeEntry.getValue())) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if(flag == 0){
+                bigAirDrids1.put(gridEntry.getKey(), gridEntry.getValue());
+            }
+            flag = 0;
+        }
+        return bigAirDrids1;
     }
 
     public Map<Integer, Grid> getGrids() {
@@ -118,13 +160,13 @@ public class World {
         this.dynamicNodes = dynamicNodes;
     }
 
-    public float getPi() {
-        return pi;
-    }
-
-    public void setPi(float pi) {
-        this.pi = pi;
-    }
+//    public float getPi() {
+//        return pi;
+//    }
+//
+//    public void setPi(float pi) {
+//        this.pi = pi;
+//    }
 
     public double getLength() {
         return length;
@@ -167,7 +209,7 @@ public class World {
     }
 
     public static void main(String arg[]){
-        World world = new World(300,300,25,0.2f,120);
+        World world = new World(300,300,25,96,24);
         world.init();
 //        for(int i = 1;i <= world.getGrids().size();i++){
 //            System.out.println(i + ":   " +  world.getGrids().get(i).getX() + "   " + world.getGrids().get(i).getY());

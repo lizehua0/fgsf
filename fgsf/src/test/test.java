@@ -6,7 +6,7 @@ import utils.FileUtils;
 
 public class test {
     public static void main(String []arg){
-        World world = new World(300,300,50,0.2f,120);
+        World world = new World(300,300,30,96,24);
         world.init();
         world.spreadNodes();
         world.findoutDynamicNodes();
@@ -24,6 +24,8 @@ public class test {
         } else {
             System.out.println("移动播撒节点写入文件失败！");
         }
+        System.out.println("最后还剩" + world.getBigGrids1().size() + "个空格子！");
+        System.out.println("动态节点的平均移动距离为：" + (0 - world.getLineSum()/world.getDynamicNodes().size()));
 //        boolean result2 = FileUtils.writeIntoFile(world.getLineSum()/world.getDynamicNodes().size() + "","E:\\nodedate\\dataMoved.txt");
 //        if(result2){
 //            System.out.println("节点平均移动距离写入文件成功！");

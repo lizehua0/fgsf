@@ -137,14 +137,20 @@ public enum MoveRule {
                     world.setLineSum(km.getSum());
                     num = 0; //此时num标记匹配数组的位置
                     int movedNode[] = km.getMovedNode();
-                    for(Map.Entry<Integer,Node> entry:world.getNodes().entrySet())
+                    for(int i = 0; i < dyNodes.length;i++)
                     {
-                        if( entry.getValue().equals(dyNodes[num])){
-                            entry.getValue().setX(centerBigGrids[movedNode[num]].getX());
-                            entry.getValue().setY(centerBigGrids[movedNode[num]].getY());
-                            num++;
+                        for(Map.Entry<Integer,Node> entry:world.getNodes().entrySet())
+                        {
+                            if( entry.getValue().equals(dyNodes[i]) && movedNode[i] < centerBigGrids.length){
+                                entry.getValue().setX(centerBigGrids[movedNode[i]].getX());
+                                entry.getValue().setY(centerBigGrids[movedNode[i]].getY());
+                               // System.out.println("此时第" + i + "个节点移动到了第" + movedNode[i] + "个格子里！");
+                                num++;
+                            }
                         }
                     }
+                    System.out.println("一共移动了" + num + "个节点！");
+                    //System.out.println("一共有" + dyNodes.length + "个节点！");
                 }
             }
             return world;
